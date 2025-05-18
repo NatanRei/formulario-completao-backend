@@ -4,11 +4,17 @@ import { env } from './env'
 import fastifyJwt from '@fastify/jwt'
 
 import fastifyCookie from '@fastify/cookie'
+import cors from '@fastify/cors'
 
 import { usersRoutes } from './http/controllers/users/routes'
 import { employeesRoutes } from './http/controllers/employees/routes'
 
 export const app = fastify()
+
+app.register(cors, {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+})
 
 app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
