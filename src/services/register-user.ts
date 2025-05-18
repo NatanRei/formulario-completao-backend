@@ -4,20 +4,20 @@ import { User } from "@prisma/client"
 import { UserAlreadyExistsError } from "./errors/user-already-exists"
 import { UsersRepository } from "@/http/repositories/users-repository"
 
-interface RegisterServiceRequest {
+interface RegisterUserServiceRequest {
     name: string
     email: string
     password: string
 }
 
-interface RegisterServiceResponse {
+interface RegisterUserServiceResponse {
     user: User
 }
 
-export class RegisterService {
+export class RegisterUserService {
     constructor (private usersRepository: UsersRepository){}
 
-    async execute({ email, name, password }: RegisterServiceRequest): Promise<RegisterServiceResponse> {
+    async execute({ email, name, password }: RegisterUserServiceRequest): Promise<RegisterUserServiceResponse> {
         const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
         if(userWithSameEmail) {

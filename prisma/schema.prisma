@@ -16,3 +16,89 @@ model User {
 
   @@map("users")
 }
+
+model Employee {
+  id                String    @id @default(uuid())
+  name              String
+  taxid_number      String
+  type              String
+  email             String    @unique
+  organization_uuid String
+  salary            String
+  start_date        DateTime
+  position          String
+  sector            String
+
+  addressId         String   @unique
+  address           Address  @relation(fields: [addressId], references: [id])
+
+  phoneId           String   @unique
+  phone             Phone    @relation(fields: [phoneId], references: [id])
+
+  banks             Bank[]
+  files             File[]
+  detailsId         String   @unique
+  details           EmployeeDetails @relation(fields: [detailsId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Address {
+  id            String  @id @default(uuid())
+  zip_code      String
+  public_place  String
+  number        String
+  complement    String?
+  district      String
+  city          String
+  federal_unit  String
+  country_code  String
+  employee      Employee?
+}
+
+model Phone {
+  id                String  @id @default(uuid())
+  telephone_number  String
+  country_code      String
+  employee          Employee?
+}
+
+model Bank {
+  id            String   @id @default(uuid())
+  bank_ispb     String
+  agency        String
+  account       String
+  account_digit String
+  account_type  String
+  key_pix       String?
+  default       Boolean
+  employeeId    String
+  employee      Employee @relation(fields: [employeeId], references: [id])
+}
+
+model File {
+  id           String   @id @default(uuid())
+  uuid         String   @unique
+  type         String
+  path         String
+  mime_type    String
+  file_name    String
+  is_persistent Boolean?
+  employeeId   String
+  employee     Employee @relation(fields: [employeeId], references: [id])
+}
+
+model EmployeeDetails {
+  id                              String   @id @default(uuid())
+  birth_date                      DateTime
+  mother_name                     String
+  general_registration_type       String
+  general_registration_number     String
+  general_registration_organ      String
+  general_registration_federal_unit String
+  general_registration_emission   DateTime
+  nationality                     String
+  naturalness                     String
+  employee                        Employee?
+}
