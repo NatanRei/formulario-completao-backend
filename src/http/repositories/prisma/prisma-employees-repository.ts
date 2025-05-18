@@ -4,7 +4,7 @@ import { EmployeesRepository } from "../employees-repository";
 
 export class PrismaEmployeesRepository implements EmployeesRepository {
   async findById(id: string) {
-    const employee = await prisma.employee.findUnique({
+    return await prisma.employee.findUnique({
       where: { id },
       include: {
         address: true,
@@ -14,11 +14,14 @@ export class PrismaEmployeesRepository implements EmployeesRepository {
         files: true,
       },
     });
-    return employee;
+  }
+
+  async getAll() {
+    return await prisma.employee.findMany();
   }
 
   async create(data: Prisma.EmployeeCreateInput) {
-    const employee = await prisma.employee.create({
+    return await prisma.employee.create({
       data,
       include: {
         address: true,
@@ -28,6 +31,5 @@ export class PrismaEmployeesRepository implements EmployeesRepository {
         files: true,
       },
     });
-    return employee;
   }
 }
