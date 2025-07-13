@@ -1,7 +1,7 @@
-import fastify from 'fastify'
+import fastify, { FastifyReply, FastifyRequest } from 'fastify'
 import { ZodError } from 'zod'
 import { env } from './env'
-import fastifyJwt from '@fastify/jwt'
+import fastifyJwt, { FastifyJWT } from '@fastify/jwt'
 
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
@@ -12,25 +12,41 @@ import { employeesRoutes } from './http/controllers/employees/routes'
 export const app = fastify()
 
 app.register(cors, {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-})
+  origin: env.CORS_ALLOWED_ORIGIN,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+});
 
 app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
-    cookie: {
-        cookieName: 'refreshToken',
-        signed: false,
-    },
-    sign: {
-        expiresIn: '10m'
-    }
 })
 
-app.register(fastifyCookie)
+app.decorate(
+  "authenticate",
+    async (req: FastifyRequest, reply: FastifyReply) => {
+    const token = req.cookies.access_token;
+
+    if (!token) {
+      return reply.status(401).send({ message: "Authentication required" });
+      }
+    
+    const decoded = req.jwt.verify<FastifyJWT["user"]>(token);
+    req.user = decoded;
+  }
+);
+
+app.addHook("preHandler", (req, res, next) => {
+  req.jwt = app.jwt;
+  return next();
+});
+
+app.register(fastifyCookie, {
+  secret: env.JWT_SECRET,
+  hook: "preHandler",
+});
 
 app.register(usersRoutes)
-app.register(employeesRoutes)
+app.register(employeesRoutes, {prefix: '/employees'})
 
 app.setErrorHandler((error, _, reply) => {
     if (error instanceof ZodError) {

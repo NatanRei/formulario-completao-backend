@@ -13,8 +13,8 @@ export async function register( request: FastifyRequest, reply: FastifyReply ) {
     const { name, email, password } = registerBodySchema.parse(request.body)
     
     try {
-        const registerUseCase = makeRegisterUserService()
-        await registerUseCase.execute({
+        const registerService = makeRegisterUserService()
+        await registerService.execute({
             name, email, password
         })
     } catch (err) {
