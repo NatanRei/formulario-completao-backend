@@ -8,8 +8,7 @@ export class PrismaEmployeesRepository implements EmployeesRepository {
       where: { id },
       include: {
         address: true,
-        phone: true,
-        details: true,
+        contact: true,
         banks: true,
         files: true,
       },
@@ -25,8 +24,7 @@ export class PrismaEmployeesRepository implements EmployeesRepository {
       data,
       include: {
         address: true,
-        phone: true,
-        details: true,
+        contact: true,
         banks: true,
         files: true,
       },

@@ -25,19 +25,18 @@ export async function authenticate(
       sub: user.id,
     });
 
-
     return reply
       .setCookie("access_token", token, {
         path: "/",
         httpOnly: true,
         secure: false,
         sameSite: "lax",
-        maxAge: 60 * 60, 
+        maxAge: 60 * 60,
       })
       .status(200)
       .send({
         ...user,
-        password_hash: undefined
+        passwordHash: undefined,
       });
   } catch (err) {
     if (err instanceof InvalidCredentialsError) {
