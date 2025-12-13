@@ -1,4 +1,4 @@
-import { makeGetEmployeeProfileService } from '@/services/factories/make-get-employee-profile-service'
+import { makeGetEmployeeProfileService } from '@/factories/make-get-employee-profile-service'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import * as z from 'zod'
 

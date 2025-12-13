@@ -1,4 +1,4 @@
-import { makeGetEmployeesService } from '@/services/factories/make-get-employees-service'
+import { makeGetEmployeesService } from '@/factories/make-get-employees-service'
 import { FastifyRequest, FastifyReply } from 'fastify'
 
 export async function all( request: FastifyRequest, reply: FastifyReply ) {

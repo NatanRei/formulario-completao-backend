@@ -1,46 +1,11 @@
+import { registerEmployeeBodySchema } from "@/http/controllers/employees/register/schema";
 import { EmployeesRepository } from "@/http/repositories/employees-repository";
 import { Employee } from "@prisma/client";
+import { z } from "zod";
 
-interface RegisterEmployeeServiceRequest {
-  name: string;
-  document: string;
-  salary: string;
-  startDate: Date;
-  birthDate: Date;
-  position: string;
-  sector: string;
-  address: {
-    zipCode: string;
-    publicPlace: string;
-    number: string;
-    complement?: string;
-    district: string;
-    city: string;
-    state: string;
-    countryCode: string;
-  };
-  contact: {
-    email: string;
-    telephoneNumber: string;
-    countryCode: string;
-  };
-  banks: {
-    bankCode: string;
-    agency: string;
-    account: string;
-    accountDigit: string;
-    accountType: string;
-    keyPix?: string | null;
-    default: boolean;
-  }[];
-  files: {
-    type: string;
-    path: string;
-    mimeType: string;
-    fileName: string;
-    is_persistent?: boolean;
-  }[];
-}
+type RegisterEmployeeServiceRequest = z.infer<
+  typeof registerEmployeeBodySchema
+>;
 
 interface RegisterEmployeeServiceResponse {
   employee: Employee;

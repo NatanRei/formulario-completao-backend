@@ -27,11 +27,11 @@ model Employee {
   position          String
   sector            String
 
-  addressId         String   @unique
-  address           Address  @relation(fields: [addressId], references: [id])
+  addressId         String?   @unique
+  address           Address?  @relation(fields: [addressId], references: [id])
 
-  contactId         String   @unique
-  contact           Contact    @relation(fields: [contactId], references: [id])
+  contactId         String?   @unique
+  contact           Contact?    @relation(fields: [contactId], references: [id])
 
   banks             Bank[]
   files             File[]

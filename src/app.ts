@@ -12,7 +12,11 @@ import { employeesRoutes } from './http/controllers/employees/routes'
 export const app = fastify()
 
 app.register(cors, {
-  origin: [env.CORS_ALLOWED_ORIGIN, 'http://localhost:5173'],
+  origin: [
+    env.CORS_ALLOWED_ORIGIN,
+    "http://localhost:5173",
+    "http://localhost:4001",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 });
