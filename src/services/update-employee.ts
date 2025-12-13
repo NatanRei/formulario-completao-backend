@@ -26,6 +26,10 @@ export class UpdateEmployeeService {
     banks,
     files,
   }: UpdateEmployeeServiceRequest): Promise<UpdateEmployeeServiceResponse> {
+    const incomingBankIds = banks?.filter((b) => b.id).map((b) => b.id!);
+
+    const incomingFileIds = files?.filter((f) => f.id).map((f) => f.id!);
+
     const employee = await this.employeesRepository.update(id as string, {
       name,
       document,
@@ -38,16 +42,41 @@ export class UpdateEmployeeService {
       ...(contact && { contact: { update: contact } }),
       ...(banks && {
         banks: {
-          update: banks.map((b) => ({ where: { id: b.id }, data: b })),
+          deleteMany: {
+            id: {
+              notIn: incomingBankIds?.length ? incomingBankIds : ["__none__"],
+            },
+          },
+          ...buildCreateUpdate(banks),
         },
       }),
       ...(files && {
         files: {
-          update: files.map((f) => ({ where: { id: f.id }, data: f })),
+          deleteMany: {
+            id: {
+              notIn: incomingFileIds?.length ? incomingFileIds : ["__none__"],
+            },
+          },
+          ...buildCreateUpdate(files),
         },
       }),
     });
 
     return { employee };
   }
+}
+
+function buildCreateUpdate<T extends { id?: string }>(items?: T[]) {
+  if (!items?.length) return {};
+
+  return {
+    update: items
+      .filter((i) => i.id)
+      .map(({ id, ...data }) => ({
+        where: { id },
+        data,
+      })),
+
+    create: items.filter((i) => !i.id).map(({ id, ...data }) => data),
+  };
 }
